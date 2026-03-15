@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.UserMapper">
+
+    <select id="selectUserById" resultType="com.accompany.entity.SysUser">
+        select * from sys_user where id = #{userId}
+    </select>
+
+    <update id="updateUser">
+        update sys_user
+        <set>
+            <if test="updateUserDto.nickname != null and updateUserDto.nickname != ''">
+                nickname = #{updateUserDto.nickname},
+            </if>
+            <if test="updateUserDto.gender != null">
+                gender = #{updateUserDto.gender},
+            </if>
+            <if test="updateUserDto.birthday != null">
+                birthday = #{updateUserDto.birthday},
+            </if>
+            update_time = now()
+        </set>
+        where id = #{userId}
+    </update>
+
+    <update id="updateAvatar">
+        update sys_user
+        set avatar = #{updateAvatarDto.avatar}, update_time = now()
+        where id = #{userId}
+    </update>
+
+    <update id="updatePassword">
+        update sys_user
+        set password = #{updatePasswordDto.newPassword}, update_time = now()
+        where id = #{userId}
+    </update>
+
+</mapper>

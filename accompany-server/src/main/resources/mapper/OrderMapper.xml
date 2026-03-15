@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.OrderMapper">
+
+    <!-- 创建订单 -->
+    <insert id="insertOrder" useGeneratedKeys="true" keyProperty="orders.id">
+        insert into orders (
+            order_no, user_id, companion_id, patient_id, service_id, service_name, service_image,
+            hospital, department, appointment_time, pickup_option, pickup_address, remarks,
+            amount, actual_amount, status
+        ) values (
+            #{orders.orderNo}, #{orders.userId}, #{orders.companionId}, #{orders.patientId},
+            #{orders.serviceId}, #{orders.serviceName}, #{orders.serviceImage},
+            #{orders.hospital}, #{orders.department}, #{orders.appointmentTime},
+            #{orders.pickupOption}, #{orders.pickupAddress}, #{orders.remarks},
+            #{orders.amount}, #{orders.actualAmount}, #{orders.status}
+        )
+    </insert>
+
+    <!-- 获取用户订单列表 -->
+    <select id="selectUserOrders" resultType="com.accompany.vo.OrderVo">
+        select
+            o.id,
+            o.order_no,
+            o.user_id,
+            o.companion_id,
+            cp.name as companion_name,
+            u.phone as companion_phone,
+            cp.avatar as companion_avatar,
+            o.service_id,
+            o.service_name,
+            o.service_image,
+            o.patient_id,
+            p.name as patient_name,
+            o.hospital,
+            o.department,
+            o.appointment_time,
+            o.pickup_option,
+            o.pickup_address,
+            o.remarks,
+            o.amount,
+            o.actual_amount,
+            o.pay_method,
+            o.pay_time,
+            o.status,
+            o.refund_reason,
+            o.refund_time,
+            o.complete_time,
+            o.create_time,
+            o.update_time
+        from orders o
+        left join companion_profile cp on o.companion_id = cp.id
+        left join sys_user u on cp.user_id = u.id
+        left join patient p on o.patient_id = p.id
+        where o.user_id = #{userId}
+        <if test="status != null">
+            and o.status = #{status}
+        </if>
+        order by o.create_time desc
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <!-- 统计用户订单总数 -->
+    <select id="countUserOrders" resultType="java.lang.Integer">
+        select count(*) from orders
+        where user_id = #{userId}
+        <if test="status != null">
+            and status = #{status}
+        </if>
+    </select>
+
+    <!-- 根据ID获取订单详情 -->
+    <select id="selectOrderById" resultType="com.accompany.vo.OrderVo">
+        select
+            o.id,
+            o.order_no,
+            o.user_id,
+            o.companion_id,
+            cp.name as companion_name,
+            u.phone as companion_phone,
+            cp.avatar as companion_avatar,
+            o.service_id,
+            o.service_name,
+            o.service_image,
+            o.patient_id,
+            p.name as patient_name,
+            o.hospital,
+            o.department,
+            o.appointment_time,
+            o.pickup_option,
+            o.pickup_address,
+            o.remarks,
+            o.amount,
+            o.actual_amount,
+            o.pay_method,
+            o.pay_time,
+            o.status,
+            o.refund_reason,
+            o.refund_time,
+            o.complete_time,
+            o.create_time,
+            o.update_time
+        from orders o
+        left join companion_profile cp on o.companion_id = cp.id
+        left join sys_user u on cp.user_id = u.id
+        left join patient p on o.patient_id = p.id
+        where o.id = #{id} and o.user_id = #{userId}
+    </select>
+
+    <!-- 更新订单状态 -->
+    <update id="updateOrderStatus">
+        update orders
+        <set>
+            status = #{status},
+            <if test="status == 3">
+                complete_time = now(),
+            </if>
+            <if test="status == 4">
+                cancel_time = now(),
+            </if>
+            <if test="status == 5">
+                refund_time = now(),
+            </if>
+            <if test="status == 6">
+                refund_time = now(),
+            </if>
+            update_time = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 更新订单支付信息 -->
+    <update id="updateOrderPay">
+        update orders
+        set pay_method = #{payMethod},
+            pay_time = now(),
+            status = 1,
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <!-- 更新订单退款信息 -->
+    <update id="updateOrderRefund">
+        update orders
+        set refund_reason = #{refundReason},
+            refund_time = now(),
+            status = 6,
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <!-- 根据订单号获取订单 -->
+    <select id="selectOrderByOrderNo" resultType="com.accompany.entity.Orders">
+        select * from orders where order_no = #{orderNo}
+    </select>
+
+    <!-- 根据订单ID获取订单实体 -->
+    <select id="selectOrderEntityById" resultType="com.accompany.entity.Orders">
+        select * from orders where id = #{id}
+    </select>
+
+    <!-- 更新陪诊师ID -->
+    <update id="updateOrderCompanionId">
+        update orders
+        set companion_id = #{companionId},
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <!-- 更新订单完成时间 -->
+    <update id="updateOrderCompleteTime">
+        update orders
+        set complete_time = now(),
+            status = 3,
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <!-- 查询陪诊师在指定日期的订单 -->
+    <select id="selectCompanionOrdersByDate" resultType="com.accompany.entity.Orders">
+        select * from orders
+        where companion_id = #{companionId}
+        and DATE(appointment_time) = #{date}
+        and status in (1, 2, 7, 3)  <!-- 待接单、已接单、服务中、已完成 -->
+    </select>
+
+</mapper>

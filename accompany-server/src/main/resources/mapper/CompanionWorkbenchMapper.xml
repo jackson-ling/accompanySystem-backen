@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.CompanionWorkbenchMapper">
+
+    <!-- 获取陪诊师统计数据 -->
+    <select id="selectStatistics" resultType="com.accompany.vo.CompanionStatisticsVo">
+        select 
+            COALESCE(cs.today_income, 0.00) as todayIncome,
+            COALESCE(cs.today_orders, 0) as todayOrders,
+            COALESCE(cp.score, 0.00) as rating,
+            COALESCE(cs.followers, 0) as followers,
+            COALESCE(cs.total_orders, 0) as totalOrders,
+            COALESCE(cs.work_days, 0) as workDays
+        from companion_profile cp
+        left join companion_statistics cs on cp.user_id = cs.user_id
+        where cp.id = #{companionId}
+    </select>
+
+    <!-- 获取陪诊师个人信息 -->
+    <select id="selectProfile" resultType="com.accompany.entity.CompanionProfile">
+        select 
+            cp.id,
+            cp.user_id,
+            cp.name,
+            cp.avatar,
+            CASE cp.gender
+                WHEN '男' THEN 1
+                WHEN '女' THEN 2
+                ELSE 0
+            END as gender,
+            cp.age,
+            cp.score,
+            cp.orders,
+            cp.comments,
+            cp.certified,
+            cp.qualified,
+            cp.experience,
+            cp.tags,
+            cp.services,
+            cp.intro,
+            cp.is_online,
+            cp.create_time,
+            cp.update_time
+        from companion_profile cp
+        where cp.user_id = #{userId}
+    </select>
+
+    <!-- 更新陪诊师个人信息 -->
+    <update id="updateProfile">
+        update companion_profile
+        <set>
+            <if test="profile.name != null and profile.name != ''">
+                name = #{profile.name},
+            </if>
+            <if test="profile.avatar != null and profile.avatar != ''">
+                avatar = #{profile.avatar},
+            </if>
+            <if test="profile.age != null">
+                age = #{profile.age},
+            </if>
+            <if test="profile.experience != null and profile.experience != ''">
+                experience = #{profile.experience},
+            </if>
+            <if test="profile.intro != null and profile.intro != ''">
+                intro = #{profile.intro},
+            </if>
+            update_time = now()
+        </set>
+        where id = #{profile.id}
+    </update>
+
+    <!-- 更新陪诊师在线状态 -->
+    <update id="updateOnlineStatus">
+        update companion_profile
+        set is_online = #{isOnline},
+            update_time = now()
+        where id = #{companionId}
+    </update>
+
+    <!-- 获取可接订单列表（抢单大厅） -->
+    <select id="selectAvailableOrders" resultType="com.accompany.vo.AvailableOrderVo">
+        select 
+            o.id,
+            o.service_name as serviceName,
+            o.hospital,
+            o.department,
+            o.appointment_time as appointmentTime,
+            o.pickup_option as pickupOption,
+            o.amount,
+            0.00 as distance
+        from orders o
+        where o.status = 1  <!-- 待接单 -->
+        and o.companion_id is null
+        order by o.create_time desc
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <!-- 统计可接订单总数 -->
+    <select id="countAvailableOrders" resultType="java.lang.Integer">
+        select count(*) from orders
+        where status = 1
+        and companion_id is null
+    </select>
+
+    <!-- 获取陪诊师订单列表 -->
+    <select id="selectCompanionOrders" resultType="com.accompany.entity.Orders">
+        select * from orders
+        where companion_id = #{companionId}
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        order by create_time desc
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <!-- 统计陪诊师订单总数 -->
+    <select id="countCompanionOrders" resultType="java.lang.Integer">
+        select count(*) from orders
+        where companion_id = #{companionId}
+        <if test="status != null">
+            and status = #{status}
+        </if>
+    </select>
+
+    <!-- 更新陪诊师ID -->
+    <update id="updateOrderCompanionId">
+        update orders
+        set companion_id = #{companionId},
+            update_time = now()
+        where id = #{orderId}
+    </update>
+
+    <!-- 更新订单状态 -->
+    <update id="updateOrderStatus">
+        update orders
+        <set>
+            status = #{status},
+            <if test="status == 3">
+                complete_time = now(),
+            </if>
+            <if test="status == 2">
+                complete_time = null,
+            </if>
+            update_time = now()
+        </set>
+        where id = #{orderId}
+    </update>
+
+    <!-- 获取收入明细 -->
+    <select id="selectIncomeRecords" resultType="com.accompany.entity.CompanionIncome">
+        select * from companion_income
+        where user_id = #{companionId}
+        order by create_time desc
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <!-- 统计收入记录总数 -->
+    <select id="countIncomeRecords" resultType="java.lang.Integer">
+        select count(*) from companion_income
+        where user_id = #{companionId}
+    </select>
+
+    <!-- 根据订单ID获取订单详情（陪诊师视角） -->
+    <select id="selectCompanionOrderById" resultType="com.accompany.vo.OrderVo">
+        select
+            o.id,
+            o.order_no,
+            o.user_id,
+            o.companion_id,
+            cp.name as companion_name,
+            u.phone as companion_phone,
+            cp.avatar as companion_avatar,
+            o.service_id,
+            o.service_name,
+            o.service_image,
+            o.patient_id,
+            p.name as patient_name,
+            o.hospital,
+            o.department,
+            o.appointment_time,
+            o.pickup_option,
+            o.pickup_address,
+            o.remarks,
+            o.amount,
+            o.actual_amount,
+            o.pay_method,
+            o.pay_time,
+            o.status,
+            o.refund_reason,
+            o.refund_time,
+            o.complete_time,
+            o.create_time,
+            o.update_time
+        from orders o
+        left join companion_profile cp on o.companion_id = cp.id
+        left join sys_user u on cp.user_id = u.id
+        left join patient p on o.patient_id = p.id
+        where o.id = #{orderId}
+    </select>
+
+</mapper>
