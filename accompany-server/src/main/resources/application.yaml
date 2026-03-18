@@ -7,13 +7,14 @@ server:
     uri-encoding: UTF-8
 spring:
   application:
-    name: zzyl
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    password:
+    name: accompany-system
+#  redis:
+#    host: 127.0.0.1
+#    port: 6379
+#    password:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
   servlet:
     multipart:
       enabled: true
@@ -25,7 +26,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/accompany_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
-    password: 2199816672
+    password: 1234
 # MyBatis配置
 mybatis:
   #mapper配置文件

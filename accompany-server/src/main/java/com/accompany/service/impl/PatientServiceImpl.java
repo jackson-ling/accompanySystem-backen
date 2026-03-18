@@ -9,7 +9,7 @@ import com.accompany.entity.Patient;
 import com.accompany.exception.BaseException;
 import com.accompany.mapper.PatientMapper;
 import com.accompany.service.PatientService;
-import com.accompany.utill.UserThreadLocal;
+import com.accompany.util.UserThreadLocal;
 import com.accompany.vo.PatientVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

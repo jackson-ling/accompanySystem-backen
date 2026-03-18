@@ -142,7 +142,7 @@ CREATE TABLE `orders` (
     `actual_amount` DECIMAL(10,2) DEFAULT NULL COMMENT '实付金额',
     `pay_method` TINYINT DEFAULT NULL COMMENT '支付方式: 1-微信, 2-支付宝, 3-余额',
     `pay_time` DATETIME DEFAULT NULL COMMENT '支付时间',
-    `status` TINYINT DEFAULT 0 COMMENT '订单状态: 0-待支付, 1-待接单, 2-已接单/服务中, 3-已完成, 4-已取消, 5-退款中, 6-已退款',
+    `status` TINYINT DEFAULT 0 COMMENT '订单状态: 0-待支付, 1-待接单, 2-已接单, 3-已完成, 4-已取消, 5-退款中, 6-已退款, 7-服务中',
     `refund_reason` VARCHAR(500) DEFAULT NULL COMMENT '退款原因',
     `refund_time` DATETIME DEFAULT NULL COMMENT '退款时间',
     `complete_time` DATETIME DEFAULT NULL COMMENT '完成时间',

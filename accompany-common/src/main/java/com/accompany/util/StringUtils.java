@@ -1,4 +1,4 @@
-package com.accompany.utill;
+package com.accompany.util;
 
 
 import org.apache.commons.lang3.RandomStringUtils;

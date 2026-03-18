@@ -31,7 +31,7 @@ public class CreateOrderDto {
 
     /** 预约时间 */
     @NotNull(message = "预约时间不能为空")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime appointmentTime;
 
     /** 接人方式: 1-医院门口, 2-指定地点 */

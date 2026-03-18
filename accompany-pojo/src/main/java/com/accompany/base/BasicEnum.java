@@ -38,7 +38,11 @@ public enum BasicEnum {
     ONLY_COMPLETED_CAN_COMMENT(400, "只有已完成状态的订单可以评价"),
     ORDER_NO_COMPANION(400, "订单未指定陪诊师，无法评价"),
     COMPANION_PROFILE_NOT_EXIST(404, "陪诊师信息不存在"),
-    ORDER_STATUS_INVALID(400, "订单状态不正确");
+    ORDER_STATUS_INVALID(400, "订单状态不正确"),
+    PARAM_ERROR(400, "参数错误"),
+    ALREADY_FAVORITED(400, "已收藏"),
+    NO_PERMISSION(403, "无权限操作"),
+    CONVERSATION_NOT_EXIST(404, "会话不存在");
 
     /**
      * 编码

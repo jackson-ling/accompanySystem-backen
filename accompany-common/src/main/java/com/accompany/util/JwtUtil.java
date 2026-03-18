@@ -1,4 +1,4 @@
-package com.accompany.utill;
+package com.accompany.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;

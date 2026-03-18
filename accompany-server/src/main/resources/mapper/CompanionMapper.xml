@@ -29,7 +29,7 @@
             c.update_time,
             CASE WHEN f.id IS NOT NULL THEN true ELSE false END as is_favorite
         from companion_profile c
-        left join favorite f on f.item_id = c.id and f.type = 'companion' and f.user_id = #{userId}
+        left join favorite f on f.item_id = c.id and f.user_id = #{userId}
         <where>
             <if test="gender != null and gender != ''">
                 and c.gender =
@@ -111,7 +111,7 @@
             c.update_time,
             CASE WHEN f.id IS NOT NULL THEN true ELSE false END as is_favorite
         from companion_profile c
-        left join favorite f on f.item_id = c.id and f.type = 'companion' and f.user_id = #{userId}
+        left join favorite f on f.item_id = c.id and f.user_id = #{userId}
         where c.id = #{id}
     </select>
 
@@ -139,28 +139,21 @@
 
     <!-- 检查是否已收藏 -->
     <select id="selectFavorite" resultType="com.accompany.entity.Favorite">
-        select * from favorite
-        where user_id = #{userId} and item_id = #{itemId} and type = 'companion'
+        select id, user_id as userId, item_id as itemId, name, avatar, description, time
+        from favorite
+        where user_id = #{userId} and item_id = #{itemId}
     </select>
 
     <!-- 添加收藏 -->
     <insert id="insertFavorite">
-        insert into favorite (user_id, type, item_id, name, avatar, description, time)
-        values (
-            #{favorite.userId},
-            'companion',
-            #{favorite.itemId},
-            #{favorite.name},
-            #{favorite.avatar},
-            #{favorite.description},
-            now()
-        )
+        insert into favorite (user_id, item_id, name, avatar, description, time)
+        values (#{favorite.userId}, #{favorite.itemId}, #{favorite.name}, #{favorite.avatar}, #{favorite.description}, now())
     </insert>
 
     <!-- 删除收藏 -->
     <delete id="deleteFavorite">
         delete from favorite
-        where user_id = #{userId} and item_id = #{itemId} and type = 'companion'
+        where user_id = #{userId} and item_id = #{itemId}
     </delete>
 
 </mapper>

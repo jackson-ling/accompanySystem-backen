@@ -10,7 +10,7 @@ import com.accompany.entity.SysUser;
 import com.accompany.exception.BaseException;
 import com.accompany.mapper.UserMapper;
 import com.accompany.service.UserService;
-import com.accompany.utill.UserThreadLocal;
+import com.accompany.util.UserThreadLocal;
 import com.accompany.vo.BalanceVo;
 import com.accompany.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;

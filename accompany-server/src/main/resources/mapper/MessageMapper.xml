@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.MessageMapper">
+
+    <!-- 获取用户消息会话列表 -->
+    <select id="selectConversationList" resultType="com.accompany.vo.MessageConversationVo">
+        select
+            id,
+            user_id,
+            type,
+            target_id,
+            name,
+            avatar,
+            last_message,
+            last_message_time,
+            unread_count,
+            create_time,
+            update_time
+        from message_conversation
+        where user_id = #{userId}
+        order by last_message_time desc
+    </select>
+
+    <!-- 根据ID获取消息会话 -->
+    <select id="selectById" resultType="com.accompany.entity.MessageConversation">
+        select * from message_conversation
+        where id = #{id} and user_id = #{userId}
+    </select>
+
+    <!-- 根据用户ID和类型获取会话 -->
+    <select id="selectByUserIdAndType" resultType="com.accompany.entity.MessageConversation">
+        select * from message_conversation
+        where user_id = #{userId} and type = #{type}
+        <if test="targetId != null">
+            and target_id = #{targetId}
+        </if>
+        order by create_time desc limit 1
+    </select>
+
+    <!-- 插入消息会话 -->
+    <insert id="insertConversation" useGeneratedKeys="true" keyProperty="conversation.id">
+        insert into message_conversation (
+            user_id, type, target_id, name, avatar, last_message,
+            last_message_time, unread_count, create_time, update_time
+        ) values (
+            #{conversation.userId}, #{conversation.type}, #{conversation.targetId},
+            #{conversation.name}, #{conversation.avatar}, #{conversation.lastMessage},
+            #{conversation.lastMessageTime}, #{conversation.unreadCount},
+            #{conversation.createTime}, #{conversation.updateTime}
+        )
+    </insert>
+
+    <!-- 更新会话最后消息 -->
+    <update id="updateLastMessage">
+        update message_conversation
+        set last_message = #{lastMessage},
+            last_message_time = #{lastMessageTime},
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <!-- 更新未读数量 -->
+    <update id="incrementUnreadCount">
+        update message_conversation
+        set unread_count = unread_count + 1,
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <!-- 标记已读 -->
+    <update id="markAsRead">
+        update message_conversation
+        set unread_count = 0,
+            update_time = now()
+        where id = #{id}
+    </update>
+
+    <!-- 获取未读消息总数 -->
+    <select id="countUnread" resultType="java.lang.Integer">
+        select sum(unread_count) from message_conversation
+        where user_id = #{userId}
+    </select>
+
+    <!-- 删除会话 -->
+    <delete id="deleteConversation">
+        delete from message_conversation
+        where id = #{id} and user_id = #{userId}
+    </delete>
+
+</mapper>

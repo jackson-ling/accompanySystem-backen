@@ -7,7 +7,7 @@ import com.accompany.entity.Orders;
 import com.accompany.mapper.CompanionMapper;
 import com.accompany.mapper.OrderMapper;
 import com.accompany.service.CompanionService;
-import com.accompany.utill.UserThreadLocal;
+import com.accompany.util.UserThreadLocal;
 import com.accompany.vo.CompanionCommentListVo;
 import com.accompany.vo.CompanionCommentVo;
 import com.accompany.vo.CompanionListVo;
@@ -39,8 +39,13 @@ public class CompanionServiceImpl implements CompanionService {
 
     @Override
     public CompanionListVo getCompanions(String gender, Long service, String keyword, String sort, Integer page, Integer pageSize) {
-        // 获取当前用户ID（用于判断是否收藏）
-        Long userId = UserThreadLocal.getCurrentId();
+        // 获取当前用户ID（用于判断是否收藏，未登录时为null）
+        Long userId = null;
+        try {
+            userId = UserThreadLocal.getCurrentId();
+        } catch (Exception e) {
+            // 用户未登录，userId保持为null
+        }
 
         // 设置默认分页参数
         if (ObjectUtils.isEmpty(page) || page < 1) {
@@ -77,8 +82,13 @@ public class CompanionServiceImpl implements CompanionService {
             throw new BaseException(BasicEnum.NOT_EXIST);
         }
 
-        // 获取当前用户ID（用于判断是否收藏）
-        Long userId = UserThreadLocal.getCurrentId();
+        // 获取当前用户ID（用于判断是否收藏，未登录时为null）
+        Long userId = null;
+        try {
+            userId = UserThreadLocal.getCurrentId();
+        } catch (Exception e) {
+            // 用户未登录，userId保持为null
+        }
 
         CompanionVo companionVo = companionMapper.selectCompanionById(id, userId);
         if (ObjectUtils.isEmpty(companionVo)) {
@@ -151,7 +161,6 @@ public class CompanionServiceImpl implements CompanionService {
             favorite = new Favorite();
             favorite.setUserId(userId);
             favorite.setItemId(id);
-            favorite.setType("companion");
             favorite.setName(companionVo.getName());
             favorite.setAvatar(companionVo.getAvatar());
             favorite.setDescription(companionVo.getIntro());
@@ -177,6 +186,15 @@ public class CompanionServiceImpl implements CompanionService {
         // 如果没有指定日期，使用今天
         if (ObjectUtils.isEmpty(date)) {
             date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } else {
+            // 处理日期格式：如果传入的是 "M-dd" 或 "MM-dd" 格式，转换为 "yyyy-MM-dd"
+            if (date.matches("^\\d{1,2}-\\d{1,2}$")) {
+                String[] parts = date.split("-");
+                int month = Integer.parseInt(parts[0]);
+                int day = Integer.parseInt(parts[1]);
+                int year = LocalDate.now().getYear();
+                date = String.format("%04d-%02d-%02d", year, month, day);
+            }
         }
 
         // 查询该陪诊师在指定日期的订单

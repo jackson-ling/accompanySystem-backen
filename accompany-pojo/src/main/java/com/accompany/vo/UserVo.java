@@ -2,6 +2,7 @@ package com.accompany.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -18,6 +19,9 @@ public class UserVo {
 
     /** 手机号 */
     private String phone;
+
+    /** 账户余额 */
+    private BigDecimal balance;
 
     /** 用户类型（1=普通用户，2=陪护员等） */
     private Integer userType;

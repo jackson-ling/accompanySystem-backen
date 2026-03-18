@@ -139,12 +139,12 @@
         where id = #{id}
     </update>
 
-    <!-- 更新订单退款信息 -->
+    <!-- 更新订单退款信息（申请退款，状态改为退款中） -->
     <update id="updateOrderRefund">
         update orders
         set refund_reason = #{refundReason},
             refund_time = now(),
-            status = 6,
+            status = 5,
             update_time = now()
         where id = #{id}
     </update>

@@ -1,4 +1,4 @@
-package com.accompany.utill;
+package com.accompany.util;
 
 public class UserThreadLocal {
     public static ThreadLocal<Long> threadLocal = new ThreadLocal<>();

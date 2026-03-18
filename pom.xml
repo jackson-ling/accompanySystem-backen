@@ -36,7 +36,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <spring-boot.version>3.2.5</spring-boot.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <hutool.version>5.8.0.M3</hutool.version>
         <aliyun.sdk.oss>3.10.2</aliyun.sdk.oss>
         <commons.io.version>2.5</commons.io.version>
@@ -44,7 +44,7 @@
         <redisson.version>3.11.2</redisson.version>
         <!--mysql驱动版本-->
         <mysql.version>8.0.33</mysql.version>
-        <mybatis.spring>2.2.0</mybatis.spring>
+        <mybatis.spring>3.0.3</mybatis.spring>
         <druid>1.2.27</druid>
         <!--jwt版本-->
         <jwt.version>3.8.1</jwt.version>

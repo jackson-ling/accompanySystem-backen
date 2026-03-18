@@ -11,8 +11,8 @@ import com.accompany.exception.BaseException;
 import com.accompany.mapper.LoginMapper;
 import com.accompany.properties.JwtProperties;
 import com.accompany.service.LoginService;
-import com.accompany.utill.JwtUtil;
-import com.accompany.utill.UserThreadLocal;
+import com.accompany.util.JwtUtil;
+import com.accompany.util.UserThreadLocal;
 import com.accompany.vo.LoginVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -103,19 +103,13 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void resetPassword(ResetPasswordDto dto) {
-        // 查询旧密码。防止修改密码与新密码一致
+        // 查询用户是否存在
         SysUser sysUser = loginMapper.selectUser(dto.getPhone());
-
-        // 是否匹配旧密码
-        if (!sysUser.getPassword().equals(dto.getPassword())) {
-            throw new BaseException(BasicEnum.OLD_PASSWORD_ERROR);
+        if (sysUser == null) {
+            throw new BaseException(BasicEnum.NOT_EXIST);
         }
 
-        // 校验新旧密码是否相同
-        if (sysUser.getPassword().equals(dto.getNewPassword())){
-            throw new BaseException(BasicEnum.ALTER_PASSWROD_SAME);
-        }
-
+        // 直接重置密码（二次密码校验在前端进行）
         loginMapper.resetPassword(dto);
     }
 }

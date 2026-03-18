@@ -16,7 +16,7 @@ import com.accompany.mapper.CompanionWorkbenchMapper;
 import com.accompany.mapper.OrderMapper;
 import com.accompany.mapper.UserMapper;
 import com.accompany.service.CompanionWorkbenchService;
-import com.accompany.utill.UserThreadLocal;
+import com.accompany.util.UserThreadLocal;
 import com.accompany.vo.AvailableOrderListVo;
 import com.accompany.vo.AvailableOrderVo;
 import com.accompany.vo.CompanionStatisticsVo;

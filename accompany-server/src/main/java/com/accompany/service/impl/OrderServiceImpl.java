@@ -13,7 +13,7 @@ import com.accompany.mapper.OrderMapper;
 import com.accompany.mapper.PatientMapper;
 import com.accompany.mapper.ServiceMapper;
 import com.accompany.service.OrderService;
-import com.accompany.utill.UserThreadLocal;
+import com.accompany.util.UserThreadLocal;
 import com.accompany.vo.CompanionVo;
 import com.accompany.vo.OrderListVo;
 import com.accompany.vo.OrderVo;
@@ -254,8 +254,8 @@ public class OrderServiceImpl implements OrderService {
             throw new BaseException(BasicEnum.ORDER_NOT_EXIST);
         }
 
-        // 只有服务中状态的订单可以确认完成
-        if (orderVo.getStatus() != 2) {
+        // 只有服务中状态的订单可以确认完成（状态 7=服务中）
+        if (orderVo.getStatus() != 7) {
             throw new BaseException(BasicEnum.ONLY_SERVICING_CAN_CONFIRM);
         }
 
@@ -282,8 +282,8 @@ public class OrderServiceImpl implements OrderService {
             throw new BaseException(BasicEnum.ORDER_NOT_EXIST);
         }
 
-        // 只有待接单或服务中状态的订单可以申请退款
-        if (orderVo.getStatus() != 1 && orderVo.getStatus() != 2) {
+        // 只有待接单或服务中状态的订单可以申请退款（状态 1=待接单，状态 7=服务中）
+        if (orderVo.getStatus() != 1 && orderVo.getStatus() != 7) {
             throw new BaseException(BasicEnum.ONLY_PENDING_OR_SERVICING_CAN_REFUND);
         }
 

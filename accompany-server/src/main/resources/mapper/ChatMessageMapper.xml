@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.ChatMessageMapper">
+
+    <!-- 获取聊天消息列表 -->
+    <select id="selectMessageList" resultType="com.accompany.vo.ChatMessageVo">
+        select
+            id,
+            conversation_id,
+            user_id,
+            text,
+            is_me,
+            type,
+            time
+        from chat_message
+        where conversation_id = #{conversationId}
+        order by time asc
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <!-- 统计聊天消息总数 -->
+    <select id="countMessages" resultType="java.lang.Integer">
+        select count(*) from chat_message
+        where conversation_id = #{conversationId}
+    </select>
+
+    <!-- 插入聊天消息 -->
+    <insert id="insertMessage" useGeneratedKeys="true" keyProperty="message.id">
+        insert into chat_message (
+            conversation_id, user_id, text, is_me, type, time
+        ) values (
+            #{message.conversationId}, #{message.userId}, #{message.text},
+            #{message.isMe}, #{message.type}, #{message.time}
+        )
+    </insert>
+
+    <!-- 删除聊天记录 -->
+    <delete id="deleteMessages">
+        delete from chat_message
+        where conversation_id = #{conversationId}
+    </delete>
+
+</mapper>
