@@ -42,7 +42,9 @@ public enum BasicEnum {
     PARAM_ERROR(400, "参数错误"),
     ALREADY_FAVORITED(400, "已收藏"),
     NO_PERMISSION(403, "无权限操作"),
-    CONVERSATION_NOT_EXIST(404, "会话不存在");
+    CONVERSATION_NOT_EXIST(404, "会话不存在"),
+    RECHARGE_AMOUNT_TOO_SMALL(400, "充值金额过小"),
+    RECHARGE_AMOUNT_TOO_LARGE(400, "充值金额过大");
 
     /**
      * 编码

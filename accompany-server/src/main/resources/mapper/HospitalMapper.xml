@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.HospitalMapper">
+
+    <!-- 查询所有医院列表 -->
+    <select id="findAll" resultType="com.accompany.entity.Hospital">
+        select id, name, address, level
+        from hospital
+        where status = 1
+        order by id
+    </select>
+
+    <!-- 根据关键词搜索医院 -->
+    <select id="searchByKeyword" resultType="com.accompany.entity.Hospital">
+        select id, name, address, level
+        from hospital
+        where status = 1
+        <if test="keyword != null and keyword != ''">
+            and (name like concat('%', #{keyword}, '%')
+                 or address like concat('%', #{keyword}, '%')
+                 or level like concat('%', #{keyword}, '%'))
+        </if>
+        order by id
+    </select>
+
+</mapper>
