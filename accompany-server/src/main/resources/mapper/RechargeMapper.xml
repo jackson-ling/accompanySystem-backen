@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.RechargeMapper">
+
+    <!-- 插入充值记录 -->
+    <insert id="insert" parameterType="com.accompany.entity.RechargeRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into recharge_record (user_id, order_no, amount, method, pay_status, create_time, update_time)
+        values (#{userId}, #{orderNo}, #{amount}, #{method}, #{payStatus}, now(), now())
+    </insert>
+
+    <!-- 根据用户ID查询充值记录列表 -->
+    <select id="findByUserId" resultType="com.accompany.entity.RechargeRecord">
+        select * from recharge_record
+        where user_id = #{userId}
+        order by create_time desc
+    </select>
+
+    <!-- 根据订单号查询充值记录 -->
+    <select id="findByOrderNo" resultType="com.accompany.entity.RechargeRecord">
+        select * from recharge_record
+        where order_no = #{orderNo}
+    </select>
+
+    <!-- 更新充值记录状态 -->
+    <update id="updateStatus">
+        update recharge_record
+        <set>
+            <if test="payStatus != null">
+                pay_status = #{payStatus},
+            </if>
+            <if test="payStatus == 1">
+                complete_time = now(),
+            </if>
+            update_time = now()
+        </set>
+        where order_no = #{orderNo}
+    </update>
+
+</mapper>

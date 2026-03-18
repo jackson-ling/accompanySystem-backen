@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.FeedbackMapper">
+
+    <!-- 插入反馈 -->
+    <insert id="insert" parameterType="com.accompany.entity.Feedback" useGeneratedKeys="true" keyProperty="id">
+        insert into feedback (user_id, content, images, contact, status, time)
+        values (#{userId}, #{content}, #{images}, #{contact}, 'pending', now())
+    </insert>
+
+    <!-- 根据用户ID查询反馈列表 -->
+    <select id="findByUserId" resultType="com.accompany.entity.Feedback">
+        select * from feedback
+        where user_id = #{userId}
+        order by time desc
+    </select>
+
+</mapper>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.CompanionMapper">
+
+    <!-- 获取陪诊师列表 -->
+    <select id="selectCompanions" resultType="com.accompany.vo.CompanionVo">
+        select
+            c.id,
+            c.name,
+            c.avatar,
+            CASE c.gender
+                WHEN '男' THEN 1
+                WHEN '女' THEN 2
+                ELSE 0
+            END as gender,
+            c.age,
+            c.score,
+            c.orders,
+            c.comments,
+            c.score as rating,
+            c.certified,
+            c.qualified,
+            c.experience,
+            c.tags,
+            c.services,
+            c.intro,
+            c.is_online,
+            c.create_time,
+            c.update_time,
+            CASE WHEN f.id IS NOT NULL THEN true ELSE false END as is_favorite
+        from companion_profile c
+        left join favorite f on f.item_id = c.id and f.user_id = #{userId}
+        <where>
+            <if test="gender != null and gender != ''">
+                and c.gender =
+                <choose>
+                    <when test="gender == 'male'">'男'</when>
+                    <when test="gender == 'female'">'女'</when>
+                    <otherwise>''</otherwise>
+                </choose>
+            </if>
+            <if test="service != null">
+                and JSON_CONTAINS(c.services, #{service}, '$')
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (c.name like CONCAT('%', #{keyword}, '%')
+                or c.intro like CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        <choose>
+            <when test="sort == 'score_desc'">
+                order by c.score desc
+            </when>
+            <when test="sort == 'orders_desc'">
+                order by c.orders desc
+            </when>
+            <otherwise>
+                order by c.create_time desc
+            </otherwise>
+        </choose>
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <!-- 统计陪诊师总数 -->
+    <select id="countCompanions" resultType="java.lang.Integer">
+        select count(*)
+        from companion_profile c
+        <where>
+            <if test="gender != null and gender != ''">
+                and c.gender =
+                <choose>
+                    <when test="gender == 'male'">'男'</when>
+                    <when test="gender == 'female'">'女'</when>
+                    <otherwise>''</otherwise>
+                </choose>
+            </if>
+            <if test="service != null">
+                and JSON_CONTAINS(c.services, #{service}, '$')
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (c.name like CONCAT('%', #{keyword}, '%')
+                or c.intro like CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据ID获取陪诊师详情 -->
+    <select id="selectCompanionById" resultType="com.accompany.vo.CompanionVo">
+        select
+            c.id,
+            c.name,
+            c.avatar,
+            CASE c.gender
+                WHEN '男' THEN 1
+                WHEN '女' THEN 2
+                ELSE 0
+            END as gender,
+            c.age,
+            c.score,
+            c.orders,
+            c.comments,
+            c.score as rating,
+            c.certified,
+            c.qualified,
+            c.experience,
+            c.tags,
+            c.services,
+            c.intro,
+            c.is_online,
+            c.create_time,
+            c.update_time,
+            CASE WHEN f.id IS NOT NULL THEN true ELSE false END as is_favorite
+        from companion_profile c
+        left join favorite f on f.item_id = c.id and f.user_id = #{userId}
+        where c.id = #{id}
+    </select>
+
+    <!-- 获取陪诊师评价列表 -->
+    <select id="selectCompanionComments" resultType="com.accompany.vo.CompanionCommentVo">
+        select
+            id,
+            user_id,
+            user_name,
+            user_avatar,
+            score,
+            content,
+            images,
+            time
+        from order_review
+        where companion_id = #{companionId}
+        order by time desc
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <!-- 统计陪诊师评价总数 -->
+    <select id="countCompanionComments" resultType="java.lang.Integer">
+        select count(*) from order_review where companion_id = #{companionId}
+    </select>
+
+    <!-- 检查是否已收藏 -->
+    <select id="selectFavorite" resultType="com.accompany.entity.Favorite">
+        select id, user_id as userId, item_id as itemId, name, avatar, description, time
+        from favorite
+        where user_id = #{userId} and item_id = #{itemId}
+    </select>
+
+    <!-- 添加收藏 -->
+    <insert id="insertFavorite">
+        insert into favorite (user_id, item_id, name, avatar, description, time)
+        values (#{favorite.userId}, #{favorite.itemId}, #{favorite.name}, #{favorite.avatar}, #{favorite.description}, now())
+    </insert>
+
+    <!-- 删除收藏 -->
+    <delete id="deleteFavorite">
+        delete from favorite
+        where user_id = #{userId} and item_id = #{itemId}
+    </delete>
+
+</mapper>

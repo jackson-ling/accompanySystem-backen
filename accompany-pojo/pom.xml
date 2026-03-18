@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!--在子模块中声明对父模块的继承-->
+    <parent>
+        <artifactId>accompanySystem</artifactId>
+        <groupId>com.accompany</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+       子模块的声明，用 <artifactId> 标签声明 maven 坐标即可，
+       无需指定 groupId（继承了父类，无需重复声明）
+     -->
+    <artifactId>accompany-pojo</artifactId>
+
+    <!--
+        （1）声明该子模块需要的依赖，所有依赖的版本在父模块中同一管理
+        （2）若是使用的是特定依赖，可以直接指定版本，无需交给父模块管理
+    -->
+    <dependencies>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
+</project>

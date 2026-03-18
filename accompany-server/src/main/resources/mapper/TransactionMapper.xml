@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.TransactionMapper">
+
+    <!-- 根据用户ID查询交易记录列表 -->
+    <select id="findByUserId" resultType="com.accompany.entity.TransactionRecord">
+        select * from transaction_record
+        where user_id = #{userId}
+        order by time desc
+    </select>
+
+    <!-- 根据用户ID和类型查询交易记录列表 -->
+    <select id="findByUserIdAndType" resultType="com.accompany.entity.TransactionRecord">
+        select * from transaction_record
+        where user_id = #{userId} and type = #{type}
+        order by time desc
+    </select>
+
+</mapper>
