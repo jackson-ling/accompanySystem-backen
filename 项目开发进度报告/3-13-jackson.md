@@ -53,3 +53,8 @@
 2. apifox 认证模块的四个接口均已实现，且通过 apifox 测试，还未进行前后端联调
 
 剩余最后2个模块（上传模块和AI模块）需提供AI模型，以及知晓图片如何存储且采用什么存储才可以继续完善
+
+3-20(Ling)
+1. 数据库脚本导入存在问题，包含测试数据的最新数据库脚本已经更新到项目文档中
+2. 完成文件上传接口（使用aliyun OSS），apifox 测试通过，本地测试可以注释掉相关代码（FileUploadController，AliyunOSSUploadUtil，AliyunOSSProperties，yaml 文件中的相关配置）
+3. ai 模块待开发
