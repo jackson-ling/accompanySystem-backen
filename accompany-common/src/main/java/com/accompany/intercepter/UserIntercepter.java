@@ -33,25 +33,47 @@ public class UserIntercepter implements HandlerInterceptor {
         // 获取请求信息
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
-        
+
         // 特殊处理：允许GET方式访问陪诊师详情页面 /companions/{id}
         // 但不允许POST方式的收藏功能 /companions/{id}/favorite
         if ("GET".equals(method) && requestURI.matches("/companions/\\d+")) {
             return true;
         }
 
+        // AI接口特殊处理：允许未登录访问，但如果带了Token则尝试解析
+        if (requestURI.startsWith("/ai/")) {
+            String token = request.getHeader("Token");
+            if(!StringUtils.isEmpty(token)){
+                // 尝试解析token
+                try {
+                    Map<String, Object> claims = JwtUtil.parseJWT(jwtProperties.getBase64EncodedSecretKey(), token);
+                    if(!ObjectUtil.isEmpty(claims)){
+                        Integer userId = MapUtil.get(claims, "userId", Integer.class);
+                        if(!ObjectUtil.isEmpty(userId)){
+                            // 把数据存储到线程中
+                            UserThreadLocal.setCurrentId(userId.longValue());
+                        }
+                    }
+                } catch (Exception e) {
+                    // Token解析失败，不影响继续访问（AI接口允许未登录）
+                }
+            }
+            return true;
+        }
+
+        // 其他接口需要强制登录验证
         // 获取token
         String token = request.getHeader("Token");
         if(StringUtils.isEmpty(token)){
             throw new BaseException(BasicEnum.SECURITY_ACCESSDENIED_FAIL);
         }
-        
+
         // 解析token
         Map<String, Object> claims = JwtUtil.parseJWT(jwtProperties.getBase64EncodedSecretKey(), token);
         if(ObjectUtil.isEmpty(claims)){
             throw new BaseException(BasicEnum.SECURITY_ACCESSDENIED_FAIL);
         }
-        
+
         Integer userId = MapUtil.get(claims, "userId", Integer.class);
         if(ObjectUtil.isEmpty(userId)){
             throw new BaseException(BasicEnum.SECURITY_ACCESSDENIED_FAIL);

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.accompany.mapper.AiChatMapper">
+
+    <!-- 获取AI聊天记录列表 -->
+    <select id="selectChatHistory" resultType="com.accompany.vo.ChatMessageVo">
+        select
+            id,
+            user_id as userId,
+            message as text,
+            1 as isMe,
+            time
+        from ai_chat_history
+        where user_id = #{userId}
+        union all
+        select
+            id,
+            user_id as userId,
+            reply as text,
+            0 as isMe,
+            time
+        from ai_chat_history
+        where user_id = #{userId}
+        order by time asc, isMe desc
+    </select>
+
+    <!-- 插入AI聊天记录 -->
+    <insert id="insertChatHistory" useGeneratedKeys="true" keyProperty="history.id">
+        insert into ai_chat_history (
+            user_id, message, reply, suggestions, time
+        ) values (
+            #{history.userId}, #{history.message}, #{history.reply},
+            #{history.suggestions}, #{history.time}
+        )
+    </insert>
+
+    <!-- 删除用户的所有AI聊天记录 -->
+    <delete id="deleteChatHistory">
+        delete from ai_chat_history
+        where user_id = #{userId}
+    </delete>
+
+</mapper>

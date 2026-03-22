@@ -26,7 +26,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/accompany_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
-    password: 123456
+    password: 2199816672
 # MyBatis配置
 mybatis:
   #mapper配置文件
@@ -53,3 +53,5 @@ accompany:
       endpoint: https://oss-cn-beijing.aliyuncs.com
       bucketName: project--accompanysystem
       region: cn-beijing
+    dashscope:
+      api-key: sk-a58f164fd45f4792935e70b7c130edd0

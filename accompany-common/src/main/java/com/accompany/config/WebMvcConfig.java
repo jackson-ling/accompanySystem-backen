@@ -36,8 +36,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/companions", // GET 陪诊师列表
                         "/companions/*/comments", // GET 陪诊师评价
                         "/companions/*/available-times", // GET 陪诊师可用时间
-                        // AI助手相关接口（公开访问）
-                        "/ai/**",
                         // 字典数据等公共接口（如果有的话）
                         "/dict/**",
                         "/hospitals/**",
@@ -49,6 +47,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         // - /order/** (订单相关)
                         // - /companion/workbench/** (陪诊师工作台)
                         // - /patient/** (就诊人管理)
+                        // - /ai/** (AI接口，允许未登录访问但会尝试解析Token)
                 );
     }
 }
