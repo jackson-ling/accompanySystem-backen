@@ -108,4 +108,39 @@ public interface OrderMapper {
      * @return 订单列表
      */
     List<Orders> selectCompanionOrdersByDate(@Param("companionId") Long companionId, @Param("date") String date);
+
+    /**
+     * 插入订单评价
+     * @param orderId 订单ID
+     * @param userId 用户ID
+     * @param companionId 陪诊师ID
+     * @param userName 用户姓名
+     * @param userAvatar 用户头像
+     * @param score 评分
+     * @param content 评价内容
+     * @param images 评价图片
+     */
+    void insertOrderReview(
+            @Param("orderId") Long orderId,
+            @Param("userId") Long userId,
+            @Param("companionId") Long companionId,
+            @Param("userName") String userName,
+            @Param("userAvatar") String userAvatar,
+            @Param("score") java.math.BigDecimal score,
+            @Param("content") String content,
+            @Param("images") String images
+    );
+
+    /**
+     * 更新陪诊师评分和评论数
+     * @param companionId 陪诊师ID
+     */
+    void updateCompanionScore(@Param("companionId") Long companionId);
+
+    /**
+     * 检查订单是否已评价
+     * @param orderId 订单ID
+     * @return 评价记录数
+     */
+    Integer checkOrderReviewed(@Param("orderId") Long orderId);
 }

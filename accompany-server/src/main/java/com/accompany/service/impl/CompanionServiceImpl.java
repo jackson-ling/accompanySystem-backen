@@ -160,6 +160,7 @@ public class CompanionServiceImpl implements CompanionService {
             // 未收藏，添加收藏
             favorite = new Favorite();
             favorite.setUserId(userId);
+            favorite.setType("companion"); // 设置收藏类型为陪诊师
             favorite.setItemId(id);
             favorite.setName(companionVo.getName());
             favorite.setAvatar(companionVo.getAvatar());

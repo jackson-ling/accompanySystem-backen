@@ -322,7 +322,31 @@ public class OrderServiceImpl implements OrderService {
             throw new BaseException(BasicEnum.ORDER_NO_COMPANION);
         }
 
-        // TODO: 创建评价记录
-        // TODO: 更新陪诊师评分
+        // 检查订单是否已评价
+        Integer reviewCount = orderMapper.checkOrderReviewed(id);
+        if (reviewCount != null && reviewCount > 0) {
+            throw new BaseException(BasicEnum.ORDER_ALREADY_REVIEWED);
+        }
+
+        // 获取陪诊师信息
+        CompanionVo companionVo = companionMapper.selectCompanionById(orderVo.getCompanionId(), userId);
+        if (ObjectUtils.isEmpty(companionVo)) {
+            throw new BaseException(BasicEnum.COMPANION_NOT_EXIST);
+        }
+
+        // 创建评价记录
+        orderMapper.insertOrderReview(
+                id,
+                userId,
+                orderVo.getCompanionId(),
+                companionVo.getName(),
+                companionVo.getAvatar(),
+                commentOrderDto.getScore(),
+                commentOrderDto.getContent(),
+                commentOrderDto.getImages()
+        );
+
+        // 更新陪诊师评分
+        orderMapper.updateCompanionScore(orderVo.getCompanionId());
     }
 }

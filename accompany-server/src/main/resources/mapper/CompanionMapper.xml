@@ -139,15 +139,15 @@
 
     <!-- 检查是否已收藏 -->
     <select id="selectFavorite" resultType="com.accompany.entity.Favorite">
-        select id, user_id as userId, item_id as itemId, name, avatar, description, time
+        select id, user_id as userId, type, item_id as itemId, name, avatar, description, time
         from favorite
         where user_id = #{userId} and item_id = #{itemId}
     </select>
 
     <!-- 添加收藏 -->
     <insert id="insertFavorite">
-        insert into favorite (user_id, item_id, name, avatar, description, time)
-        values (#{favorite.userId}, #{favorite.itemId}, #{favorite.name}, #{favorite.avatar}, #{favorite.description}, now())
+        insert into favorite (user_id, type, item_id, name, avatar, description, time)
+        values (#{favorite.userId}, #{favorite.type}, #{favorite.itemId}, #{favorite.name}, #{favorite.avatar}, #{favorite.description}, now())
     </insert>
 
     <!-- 删除收藏 -->

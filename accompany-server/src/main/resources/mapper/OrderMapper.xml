@@ -47,11 +47,15 @@
             o.refund_time,
             o.complete_time,
             o.create_time,
-            o.update_time
+            o.update_time,
+            CASE WHEN orv.id IS NOT NULL THEN true ELSE false END as reviewed,
+            orv.score as reviewScore,
+            orv.content as reviewContent
         from orders o
         left join companion_profile cp on o.companion_id = cp.id
         left join sys_user u on cp.user_id = u.id
         left join patient p on o.patient_id = p.id
+        left join order_review orv on o.id = orv.order_id
         where o.user_id = #{userId}
         <if test="status != null">
             and o.status = #{status}
@@ -99,11 +103,15 @@
             o.refund_time,
             o.complete_time,
             o.create_time,
-            o.update_time
+            o.update_time,
+            CASE WHEN orv.id IS NOT NULL THEN true ELSE false END as reviewed,
+            orv.score as reviewScore,
+            orv.content as reviewContent
         from orders o
         left join companion_profile cp on o.companion_id = cp.id
         left join sys_user u on cp.user_id = u.id
         left join patient p on o.patient_id = p.id
+        left join order_review orv on o.id = orv.order_id
         where o.id = #{id} and o.user_id = #{userId}
     </select>
 
@@ -182,6 +190,38 @@
         where companion_id = #{companionId}
         and DATE(appointment_time) = #{date}
         and status in (1, 2, 7, 3)  <!-- 待接单、已接单、服务中、已完成 -->
+    </select>
+
+    <!-- 插入订单评价 -->
+    <insert id="insertOrderReview">
+        insert into order_review (
+            order_id, user_id, companion_id, user_name, user_avatar, score, content, images, time
+        ) values (
+            #{orderId}, #{userId}, #{companionId}, #{userName}, #{userAvatar},
+            #{score}, #{content}, #{images}, now()
+        )
+    </insert>
+
+    <!-- 更新陪诊师评分和评论数 -->
+    <update id="updateCompanionScore">
+        update companion_profile cp
+        set cp.score = (
+            select COALESCE(AVG(orv.score), 5.0)
+            from order_review orv
+            where orv.companion_id = cp.id
+        ),
+        cp.comments = (
+            select COALESCE(COUNT(*), 0)
+            from order_review orv
+            where orv.companion_id = cp.id
+        ),
+        cp.update_time = now()
+        where cp.id = #{companionId}
+    </update>
+
+    <!-- 检查订单是否已评价 -->
+    <select id="checkOrderReviewed" resultType="java.lang.Integer">
+        select count(*) from order_review where order_id = #{orderId}
     </select>
 
 </mapper>

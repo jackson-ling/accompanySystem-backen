@@ -11,6 +11,9 @@ public class Favorite {
     /** 用户ID */
     private Long userId;
 
+    /** 类型: companion-陪诊师, service-服务 */
+    private String type;
+
     /** 收藏项目ID（陪诊师ID） */
     private Long itemId;
 

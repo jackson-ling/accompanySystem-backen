@@ -99,4 +99,13 @@ public class OrderVo {
     /** 更新时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
+
+    /** 是否已评价 */
+    private Boolean reviewed;
+
+    /** 评价评分 */
+    private BigDecimal reviewScore;
+
+    /** 评价内容 */
+    private String reviewContent;
 }

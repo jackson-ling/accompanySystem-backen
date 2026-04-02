@@ -37,6 +37,7 @@ public enum BasicEnum {
     ONLY_PENDING_OR_SERVICING_CAN_REFUND(400, "只有待接单或服务中状态的订单可以申请退款"),
     ONLY_COMPLETED_CAN_COMMENT(400, "只有已完成状态的订单可以评价"),
     ORDER_NO_COMPANION(400, "订单未指定陪诊师，无法评价"),
+    ORDER_ALREADY_REVIEWED(400, "订单已经评价过了"),
     COMPANION_PROFILE_NOT_EXIST(404, "陪诊师信息不存在"),
     ORDER_STATUS_INVALID(400, "订单状态不正确"),
     PARAM_ERROR(400, "参数错误"),

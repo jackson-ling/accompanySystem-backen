@@ -19,4 +19,7 @@ public class CommentOrderDto {
 
     /** 评价内容 */
     private String content;
+
+    /** 评价图片（JSON数组字符串） */
+    private String images;
 }
