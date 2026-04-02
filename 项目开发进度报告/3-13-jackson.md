@@ -59,7 +59,7 @@
 2. 完成文件上传接口（使用aliyun OSS），apifox 测试通过，本地测试可以注释掉相关代码（FileUploadController，AliyunOSSUploadUtil，AliyunOSSProperties，yaml 文件中的相关配置）
 3. ai 模块待开发
 
-3-20(Song)
+4-2(Song)
 1. 修复订单评价缺少上传图片这个问题
 2. 增加重复订单再次评价会显示错误信息
 3. 在添加收藏时，添加了 type 字段的设置
