@@ -84,16 +84,19 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
 
         // 检查收藏记录是否存在
-        Favorite favorite = favoriteMapper.selectById(id);
-        if (ObjectUtils.isEmpty(favorite)) {
-            throw new BaseException(BasicEnum.NOT_EXIST);
-        }
+//        Favorite favorite = favoriteMapper.selectById(id);
+//        if (ObjectUtils.isEmpty(favorite)) {
+//            throw new BaseException(BasicEnum.NOT_EXIST);
+//        }
 
         // 检查是否是当前用户的收藏
-        if (!favorite.getUserId().equals(userId)) {
-            throw new BaseException(BasicEnum.NO_PERMISSION);
-        }
+//        if (!favorite.getUserId().equals(userId)) {
+//            throw new BaseException(BasicEnum.NO_PERMISSION);
+//        }
 
-        favoriteMapper.deleteById(id);
+//        favoriteMapper.deleteById(id);
+
+        // 根据用户 id 和 陪诊师 id 删除收藏记录
+        favoriteMapper.deleteByUserIdAndItemId(userId, id);
     }
 }

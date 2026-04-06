@@ -23,7 +23,6 @@ public class FileUploadController {
         //将文件交给OSS存储管理
         String url = aliyunOSSUploadUtil.upload(file.getBytes(), file.getOriginalFilename());
         log.info("文件上传OSS, url: {}", url);
-
         return Result.success(url);
     }
 }
