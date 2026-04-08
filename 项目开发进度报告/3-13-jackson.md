@@ -66,3 +66,6 @@
 
 4.6(Ling)
 修复后端BUG，详情见小程序接口测试联调文档内容
+
+4.8(Ling)
+整理 sql 文件，在最新sql文件中的数据库脚本（script.sql）中，favorite 表增加原先删除的type字段
